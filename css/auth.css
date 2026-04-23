@@ -1,0 +1,187 @@
+/* ============================================================
+   auth.css — Estilos para login y registro
+   ============================================================ */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--azul) 0%, #0f2a47 50%, var(--verde) 100%);
+  padding: 2rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-page::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+  top: -200px;
+  right: -150px;
+}
+
+.auth-page::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 50%;
+  bottom: -100px;
+  left: -100px;
+}
+
+.auth-card {
+  background: var(--blanco);
+  border-radius: var(--radio-xl);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.auth-card__header {
+  background: linear-gradient(135deg, var(--verde) 0%, var(--verde-claro) 100%);
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+}
+
+.auth-card__logo {
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.2);
+  border-radius: var(--radio-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1rem;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.auth-card__header h1 {
+  color: var(--blanco);
+  font-size: 1.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.auth-card__header p {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.auth-card__body {
+  padding: 2rem;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  color: var(--gris-400);
+  font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gris-200);
+}
+
+.auth-link {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--gris-600);
+  margin-top: 1.5rem;
+}
+
+.auth-link a {
+  font-weight: 600;
+}
+
+/* Indicador de fortaleza de contraseña */
+.password-strength {
+  margin-top: 0.4rem;
+  display: none;
+}
+
+.password-strength.visible {
+  display: block;
+}
+
+.password-strength__bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gris-200);
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.password-strength__fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.3s ease;
+  width: 0%;
+}
+
+.password-strength__fill[data-strength="1"] { width: 25%; background: var(--rojo); }
+.password-strength__fill[data-strength="2"] { width: 50%; background: var(--amarillo); }
+.password-strength__fill[data-strength="3"] { width: 75%; background: #f59e0b; }
+.password-strength__fill[data-strength="4"] { width: 100%; background: var(--verde); }
+
+.password-strength__label {
+  font-size: 0.75rem;
+  color: var(--gris-400);
+}
+
+/* Toggle password visibility */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input {
+  padding-right: 2.75rem;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gris-400);
+  font-size: 1rem;
+  padding: 0.25rem;
+  transition: color var(--trans);
+}
+
+.toggle-password:hover {
+  color: var(--gris-600);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    border-radius: var(--radio-lg);
+  }
+
+  .auth-card__header {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .auth-card__body {
+    padding: 1.5rem;
+  }
+}

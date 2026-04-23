@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BarrioConnect — Tu comunidad en línea</title>
+  <meta name="description" content="Plataforma digital para barrios semi cerrados. Anuncios de servicios, noticias y más.">
+  <link rel="stylesheet" href="/css/main.css">
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Config (el usuario debe crear este archivo) -->
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="/index.html" class="navbar__brand">
+        <div class="navbar__brand-icon">🏘</div>
+        BarrioConnect
+      </a>
+
+      <div class="navbar__menu" id="navbar-menu">
+        <a href="/pages/anuncios.html">Servicios</a>
+        <a href="/pages/noticias.html">Noticias</a>
+        <a href="/pages/telefonos.html">Teléfonos útiles</a>
+      </div>
+
+      <div class="navbar__user">
+        <span class="navbar__user-name" id="navbar-nombre" style="display:none;"></span>
+        <a href="/pages/dashboard.html" class="btn btn--secundario btn--sm" id="btn-dashboard" style="display:none;">Mi panel</a>
+        <a href="/pages/login.html" class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
+        <button class="navbar__hamburger" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__content">
+      <div class="hero__tag">🏘 Tu barrio, más conectado</div>
+      <h1>La plataforma digital de tu barrio</h1>
+      <p>Encontrá servicios de confianza, leé noticias del barrio y conectate con tu comunidad.</p>
+      <div class="hero__actions">
+        <a href="/pages/anuncios.html" class="btn btn--primario btn--lg">Ver servicios</a>
+        <a href="/pages/registro.html" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.4);">
+          Registrarse gratis
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features">
+    <div class="wrapper">
+      <div class="section-header" style="margin-bottom:2.5rem;justify-content:center;text-align:center;flex-direction:column;">
+        <h2>Todo lo que necesitás en un solo lugar</h2>
+        <p style="color:var(--gris-600);margin:0;">Una plataforma pensada para la comunidad del barrio</p>
+      </div>
+      <div class="features__grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">🔧</div>
+          <h3>Servicios del barrio</h3>
+          <p>Electricistas, plomeros, gasistas y más. Encontrá el profesional que necesitás entre tus vecinos.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">📰</div>
+          <h3>Noticias del barrio</h3>
+          <p>Enterate de todo lo que pasa en tu comunidad. Información importante y novedades del barrio.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">📞</div>
+          <h3>Teléfonos útiles</h3>
+          <p>Municipio, emergencias, seguridad y más. Todos los contactos importantes a mano.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">📢</div>
+          <h3>Publicá tus servicios</h3>
+          <p>¿Ofrecés algún servicio? Publicá tu anuncio y llegá a toda la comunidad del barrio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NOTICIAS PREVIEW ===== -->
+  <section class="noticias-preview">
+    <div class="wrapper">
+      <div class="section-header">
+        <h2>Últimas noticias</h2>
+        <a href="/pages/noticias.html" class="btn btn--ghost btn--sm">Ver todas →</a>
+      </div>
+      <div class="noticias-grid" id="noticias-preview-grid">
+        <!-- Se carga dinámicamente -->
+        <div style="grid-column:1/-1;text-align:center;padding:2rem;">
+          <div class="loading-spinner" style="margin:0 auto;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section style="background:linear-gradient(135deg,var(--verde),var(--verde-claro));padding:4rem 1.25rem;text-align:center;">
+    <div class="wrapper">
+      <h2 style="color:white;margin-bottom:1rem;">¿Ofrecés algún servicio?</h2>
+      <p style="color:rgba(255,255,255,0.85);font-size:1.05rem;margin-bottom:2rem;">
+        Publicá tu anuncio y llegá a todos los vecinos del barrio. Planes desde $500.
+      </p>
+      <a href="/pages/registro.html" class="btn btn--lg" style="background:white;color:var(--verde);">
+        Publicar mi servicio
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="wrapper">
+      <div style="margin-bottom:1rem;font-size:1.5rem;">🏘</div>
+      <p style="margin:0;font-size:0.875rem;">
+        BarrioConnect — La plataforma de tu comunidad.
+        <a href="/pages/noticias.html">Noticias</a> ·
+        <a href="/pages/telefonos.html">Teléfonos</a> ·
+        <a href="/pages/anuncios.html">Servicios</a>
+      </p>
+    </div>
+  </footer>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    // Inicializar página principal
+    async function initIndex() {
+      try {
+        await inicializarSupabase();
+        const sb = getSupabase();
+        initNavbar();
+
+        // Verificar sesión para mostrar nav adecuado
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) {
+          document.getElementById('btn-login').style.display = 'none';
+          document.getElementById('btn-dashboard').style.display = 'flex';
+          const perfil = await obtenerPerfilActual();
+          if (perfil) {
+            document.getElementById('navbar-nombre').textContent = perfil.nombre.split(' ')[0];
+            document.getElementById('navbar-nombre').style.display = 'inline';
+          }
+        }
+
+        // Cargar noticias recientes
+        const { data: noticias } = await sb
+          .from('noticias')
+          .select('*')
+          .eq('publicada', true)
+          .order('creado_en', { ascending: false })
+          .limit(3);
+
+        const grid = document.getElementById('noticias-preview-grid');
+        if (!noticias || noticias.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column:1/-1;" class="empty-state">
+              <div class="empty-state__icon">📰</div>
+              <h3>Sin noticias por ahora</h3>
+              <p>Las noticias del barrio aparecerán aquí.</p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = noticias.map(n => `
+          <div class="noticia-card">
+            ${n.imagen_url
+              ? `<img src="${n.imagen_url}" class="noticia-card__img" alt="${n.titulo}" loading="lazy">`
+              : `<div class="noticia-card__img-placeholder">📰</div>`}
+            <div class="noticia-card__body">
+              <div class="noticia-card__fecha">${formatearFecha(n.creado_en)}</div>
+              <div class="noticia-card__titulo">${n.titulo}</div>
+              <p class="noticia-card__extracto">${n.contenido}</p>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (e) {
+        console.error('Error inicializando:', e);
+      }
+    }
+
+    initIndex();
+  </script>
+</body>
+</html>

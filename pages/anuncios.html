@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servicios del barrio — BarrioConnect</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/anuncios.js"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="/index.html" class="navbar__brand">
+        <div class="navbar__brand-icon">🏘</div>
+        BarrioConnect
+      </a>
+      <div class="navbar__menu" id="navbar-menu">
+        <a href="/pages/anuncios.html" class="active">Servicios</a>
+        <a href="/pages/noticias.html">Noticias</a>
+        <a href="/pages/telefonos.html">Teléfonos útiles</a>
+        <a href="/pages/admin.html" class="navbar__admin-link" style="display:none;">⚙️ Admin</a>
+      </div>
+      <div class="navbar__user">
+        <span class="navbar__user-name"></span>
+        <a href="/pages/dashboard.html" class="btn btn--primario btn--sm" id="btn-dashboard" style="display:none;">Mi panel</a>
+        <a href="/pages/login.html" class="btn btn--secundario btn--sm" id="btn-login">Ingresar</a>
+        <button id="btn-logout" class="btn btn--ghost btn--sm" style="display:none;">Salir</button>
+        <button class="navbar__hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header de sección -->
+  <div style="background:var(--azul);padding:2.5rem 1.25rem;">
+    <div class="wrapper">
+      <h1 style="color:white;margin-bottom:0.5rem;">Servicios del barrio</h1>
+      <p style="color:rgba(255,255,255,0.75);margin:0;">Encontrá profesionales de confianza entre tus vecinos</p>
+    </div>
+  </div>
+
+  <main style="padding:2rem 1.25rem;">
+    <div class="wrapper">
+
+      <!-- Buscador -->
+      <div style="margin-bottom:1.5rem;">
+        <input type="search" id="buscador-anuncios"
+          placeholder="🔍 Buscar electricista, plomero..."
+          style="width:100%;max-width:480px;padding:0.75rem 1rem;border:2px solid var(--gris-200);
+                 border-radius:var(--radio-md);font-family:var(--font-body);font-size:0.95rem;
+                 outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='var(--verde)'"
+          onblur="this.style.borderColor='var(--gris-200)'">
+      </div>
+
+      <!-- Filtros por categoría -->
+      <div class="filtros" id="filtros-categorias">
+        <div class="loading-spinner" style="margin:0;width:24px;height:24px;border-width:3px;"></div>
+      </div>
+
+      <!-- Grid de anuncios -->
+      <div id="anuncios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;">
+        <div style="grid-column:1/-1;text-align:center;padding:3rem;">
+          <div class="loading-spinner" style="margin:0 auto;"></div>
+        </div>
+      </div>
+
+      <!-- CTA para publicar -->
+      <div style="margin-top:3rem;background:var(--verde-suave);border:1px solid var(--verde-borde);
+                  border-radius:var(--radio-lg);padding:2rem;text-align:center;">
+        <h3 style="margin-bottom:0.5rem;">¿Ofrecés un servicio?</h3>
+        <p style="color:var(--gris-600);margin-bottom:1.25rem;">
+          Publicá tu anuncio y llegá a toda la comunidad del barrio.
+        </p>
+        <a href="/pages/dashboard.html" class="btn btn--primario">Publicar mi servicio</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrapper">
+      <p style="margin:0;font-size:0.875rem;">BarrioConnect — La plataforma de tu comunidad.</p>
+    </div>
+  </footer>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    async function init() {
+      try {
+        await inicializarSupabase();
+        initNavbar();
+
+        const sb = getSupabase();
+        const { data: { session } } = await sb.auth.getSession();
+
+        if (session) {
+          document.getElementById('btn-login').style.display = 'none';
+          document.getElementById('btn-dashboard').style.display = 'flex';
+          document.getElementById('btn-logout').style.display = 'flex';
+          document.getElementById('btn-logout').addEventListener('click', cerrarSesion);
+
+          const perfil = await obtenerPerfilActual();
+          if (perfil) {
+            document.querySelector('.navbar__user-name').textContent = perfil.nombre.split(' ')[0];
+            if (perfil.rol === 'admin') {
+              document.querySelector('.navbar__admin-link').style.display = 'flex';
+            }
+          }
+        }
+
+        await initPaginaAnuncios();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

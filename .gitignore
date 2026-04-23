@@ -1,0 +1,13 @@
+# Credenciales sensibles — NUNCA subir a GitHub
+js/config.js
+
+# Editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Logs
+*.log

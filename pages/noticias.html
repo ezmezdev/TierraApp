@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noticias del barrio — BarrioConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    /* ── Noticias page styles ── */
+    .noticias-hero {
+      background: linear-gradient(135deg, var(--azul) 0%, var(--azul-dark) 100%);
+      padding: var(--space-16) var(--space-4) var(--space-12);
+      text-align: center;
+      color: #fff;
+    }
+    .noticias-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: var(--space-2);
+    }
+    .noticias-hero p {
+      opacity: .85;
+      font-size: 1.05rem;
+    }
+
+    .noticias-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-4) var(--space-16);
+    }
+
+    /* Grid de cards */
+    .noticias-grid {
+      display: grid;
+      gap: var(--space-6);
+    }
+
+    .noticia-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .noticia-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .noticia-card-body {
+      padding: var(--space-6);
+    }
+
+    .noticia-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      color: var(--text-muted);
+      font-size: .85rem;
+    }
+    .noticia-meta .meta-dot { color: var(--border); }
+
+    .noticia-titulo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+      line-height: 1.3;
+    }
+
+    .noticia-contenido {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: .97rem;
+      white-space: pre-line;
+    }
+
+    /* Expandir/colapsar contenido largo */
+    .noticia-contenido.truncated {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .btn-leer-mas {
+      background: none;
+      border: none;
+      color: var(--verde);
+      font-weight: 600;
+      font-size: .9rem;
+      cursor: pointer;
+      padding: var(--space-2) 0 0;
+      display: block;
+    }
+    .btn-leer-mas:hover { text-decoration: underline; }
+
+    /* Estado vacío */
+    .noticias-empty {
+      text-align: center;
+      padding: var(--space-20) var(--space-4);
+      color: var(--text-muted);
+    }
+    .noticias-empty .empty-icon { font-size: 3rem; margin-bottom: var(--space-4); }
+    .noticias-empty p { font-size: 1.05rem; }
+
+    /* Skeleton loader */
+    .skeleton-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    .skeleton-line {
+      background: var(--border);
+      border-radius: var(--radius-sm);
+      animation: shimmer 1.4s infinite ease-in-out;
+    }
+    @keyframes shimmer {
+      0%, 100% { opacity: .6; }
+      50% { opacity: 1; }
+    }
+
+    /* Badge "Nuevo" */
+    .badge-nuevo {
+      display: inline-flex;
+      align-items: center;
+      background: var(--verde-light);
+      color: var(--verde);
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <span class="brand-icon">🏘️</span>
+        <span class="brand-text">BarrioConnect</span>
+      </a>
+      <div class="navbar-links" id="navbar-links">
+        <a href="anuncios.html" class="nav-link">Servicios</a>
+        <a href="noticias.html" class="nav-link nav-link-active">Noticias</a>
+        <a href="telefonos.html" class="nav-link">Teléfonos</a>
+      </div>
+      <div class="navbar-auth" id="navbar-auth">
+        <!-- poblado por JS -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="noticias-hero">
+    <h1>📰 Noticias del barrio</h1>
+    <p>Enterate de las novedades y comunicados oficiales de tu comunidad</p>
+  </section>
+
+  <!-- CONTENIDO -->
+  <div class="noticias-container">
+    <div id="noticias-lista" class="noticias-grid">
+      <!-- Skeletons mientras carga -->
+      <div class="skeleton-card">
+        <div class="skeleton-line" style="height:12px;width:30%;margin-bottom:12px;"></div>
+        <div class="skeleton-line" style="height:20px;width:70%;margin-bottom:10px;"></div>
+        <div class="skeleton-line" style="height:12px;width:100%;margin-bottom:6px;"></div>
+        <div class="skeleton-line" style="height:12px;width:90%;"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-line" style="height:12px;width:25%;margin-bottom:12px;"></div>
+        <div class="skeleton-line" style="height:20px;width:80%;margin-bottom:10px;"></div>
+        <div class="skeleton-line" style="height:12px;width:100%;margin-bottom:6px;"></div>
+        <div class="skeleton-line" style="height:12px;width:75%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    /**
+     * Página de noticias públicas
+     * Solo se muestran noticias con publicada = true
+     */
+
+    const LIMITE_CHARS = 400; // caracteres antes de mostrar "Leer más"
+
+    async function cargarNoticias() {
+      const contenedor = document.getElementById('noticias-lista');
+
+      try {
+        const { data: noticias, error } = await supabase
+          .from('noticias')
+          .select('id, titulo, contenido, created_at')
+          .eq('publicada', true)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!noticias || noticias.length === 0) {
+          contenedor.innerHTML = `
+            <div class="noticias-empty">
+              <div class="empty-icon">📭</div>
+              <p>No hay noticias publicadas por el momento.</p>
+              <p>¡Volvé pronto!</p>
+            </div>`;
+          return;
+        }
+
+        const ahora = new Date();
+
+        contenedor.innerHTML = noticias.map(n => {
+          const fecha = new Date(n.created_at);
+          const fechaStr = fecha.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+          const esNueva = (ahora - fecha) < 3 * 24 * 60 * 60 * 1000; // menos de 3 días
+
+          const contenidoEscapado = escaparHTML(n.contenido);
+          const esTruncated = n.contenido.length > LIMITE_CHARS;
+
+          return `
+            <article class="noticia-card" id="noticia-${n.id}">
+              <div class="noticia-card-body">
+                <div class="noticia-meta">
+                  <span>📅 ${fechaStr}</span>
+                  ${esNueva ? '<span class="meta-dot">·</span><span class="badge-nuevo">Nuevo</span>' : ''}
+                </div>
+                <h2 class="noticia-titulo">${escaparHTML(n.titulo)}</h2>
+                <div class="noticia-contenido ${esTruncated ? 'truncated' : ''}" id="contenido-${n.id}">
+                  ${contenidoEscapado}
+                </div>
+                ${esTruncated ? `<button class="btn-leer-mas" onclick="toggleContenido('${n.id}')">Leer más ↓</button>` : ''}
+              </div>
+            </article>`;
+        }).join('');
+
+      } catch (err) {
+        console.error('Error cargando noticias:', err);
+        contenedor.innerHTML = `
+          <div class="noticias-empty">
+            <div class="empty-icon">⚠️</div>
+            <p>No se pudieron cargar las noticias.</p>
+            <p>Por favor, intentá de nuevo más tarde.</p>
+          </div>`;
+      }
+    }
+
+    /**
+     * Expande o colapsa el contenido de una noticia
+     */
+    function toggleContenido(id) {
+      const div = document.getElementById(`contenido-${id}`);
+      const btn = div.nextElementSibling;
+      const expandido = !div.classList.contains('truncated');
+
+      if (expandido) {
+        div.classList.add('truncated');
+        btn.textContent = 'Leer más ↓';
+      } else {
+        div.classList.remove('truncated');
+        btn.textContent = 'Leer menos ↑';
+      }
+    }
+
+    /**
+     * Escapar HTML para prevenir XSS
+     */
+    function escaparHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      initNavbar();
+      cargarNoticias();
+    });
+  </script>
+
+</body>
+</html>

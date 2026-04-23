@@ -1,0 +1,367 @@
+/* ============================================================
+   admin.css — Estilos del panel de administración
+   ============================================================ */
+
+.admin-header {
+  background: linear-gradient(135deg, var(--azul), #0f2a47);
+  padding: 2rem 1.25rem;
+  color: var(--blanco);
+}
+
+.admin-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-header h1 {
+  color: var(--blanco);
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-header__badge {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* --- Tabs admin --- */
+.admin-tabs {
+  background: var(--blanco);
+  border-bottom: 1px solid var(--gris-200);
+  position: sticky;
+  top: 64px;
+  z-index: 50;
+}
+
+.admin-tabs__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  overflow-x: auto;
+  gap: 0;
+}
+
+.admin-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gris-600);
+  border-bottom: 3px solid transparent;
+  transition: all var(--trans);
+  white-space: nowrap;
+  cursor: pointer;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: var(--font-body);
+}
+
+.admin-tab:hover {
+  color: var(--verde);
+}
+
+.admin-tab.active {
+  color: var(--verde);
+  border-bottom-color: var(--verde);
+}
+
+/* --- Contenido admin --- */
+.admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.admin-section {
+  display: none;
+}
+
+.admin-section.active {
+  display: block;
+}
+
+.admin-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-section__header h2 {
+  font-size: 1.3rem;
+}
+
+/* --- Búsqueda y filtros admin --- */
+.admin-busqueda {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.busqueda-input {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+
+.busqueda-input input {
+  width: 100%;
+  padding: 0.6rem 0.9rem 0.6rem 2.5rem;
+  border: 2px solid var(--gris-200);
+  border-radius: var(--radio-sm);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: border-color var(--trans);
+  outline: none;
+}
+
+.busqueda-input input:focus {
+  border-color: var(--verde);
+}
+
+.busqueda-input::before {
+  content: '🔍';
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* --- Tabla admin con acciones --- */
+.acciones-cell {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+/* --- Editor de noticias --- */
+.noticia-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .noticia-editor {
+    grid-template-columns: 1fr;
+  }
+}
+
+.noticia-editor__form {
+  background: var(--blanco);
+  border-radius: var(--radio-md);
+  border: 1px solid var(--gris-200);
+  padding: 1.5rem;
+}
+
+.noticia-editor__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.noticia-admin-card {
+  background: var(--blanco);
+  border-radius: var(--radio-md);
+  border: 1px solid var(--gris-200);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.noticia-admin-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.noticia-admin-card__titulo {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--azul);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noticia-admin-card__meta {
+  font-size: 0.78rem;
+  color: var(--gris-400);
+}
+
+.noticia-admin-card__actions {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+/* --- Editor de teléfonos --- */
+.telefono-admin-card {
+  background: var(--blanco);
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--gris-200);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.telefono-admin-card__info {
+  flex: 1;
+}
+
+.telefono-admin-card__nombre {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--gris-800);
+}
+
+.telefono-admin-card__tel {
+  font-size: 0.8rem;
+  color: var(--verde);
+  font-weight: 600;
+}
+
+.telefono-admin-card__cat {
+  font-size: 0.75rem;
+  color: var(--gris-400);
+}
+
+/* --- Promociones --- */
+.promo-card {
+  background: linear-gradient(135deg, var(--verde-suave), var(--blanco));
+  border: 2px solid var(--verde-borde);
+  border-radius: var(--radio-md);
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.promo-card::before {
+  content: '🎁';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  opacity: 0.2;
+}
+
+.promo-card__descuento {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--verde);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.promo-card__titulo {
+  font-weight: 700;
+  color: var(--azul);
+  margin-bottom: 0.25rem;
+}
+
+.promo-card__vigencia {
+  font-size: 0.78rem;
+  color: var(--gris-600);
+}
+
+/* --- Stats admin --- */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-stat {
+  background: var(--blanco);
+  border-radius: var(--radio-md);
+  border: 1px solid var(--gris-200);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-stat::after {
+  content: attr(data-icon);
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  opacity: 0.1;
+}
+
+.admin-stat__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gris-600);
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat__valor {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--azul);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.admin-stat__delta {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.admin-stat__delta--pos { color: var(--verde); }
+.admin-stat__delta--neg { color: var(--rojo); }
+
+@media (max-width: 768px) {
+  .admin-tabs__inner {
+    gap: 0;
+    padding: 0 0.5rem;
+  }
+
+  .admin-tab {
+    padding: 0.85rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .admin-content {
+    padding: 1.25rem;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

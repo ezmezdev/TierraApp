@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin — BarrioConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-body">
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <span class="brand-icon">🏘️</span>
+        <span class="brand-text">BarrioConnect</span>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <div class="navbar-actions">
+        <span class="admin-user-info" id="admin-user-info"></span>
+        <button class="btn btn-outline btn-sm" id="btn-cerrar-sesion">Cerrar sesión</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <nav class="admin-nav">
+        <button class="admin-nav-item active" data-tab="usuarios">
+          <span class="nav-icon">👥</span>
+          <span>Usuarios</span>
+        </button>
+        <button class="admin-nav-item" data-tab="anuncios">
+          <span class="nav-icon">📢</span>
+          <span>Anuncios</span>
+        </button>
+        <button class="admin-nav-item" data-tab="pagos">
+          <span class="nav-icon">💳</span>
+          <span>Pagos</span>
+        </button>
+        <button class="admin-nav-item" data-tab="noticias">
+          <span class="nav-icon">📰</span>
+          <span>Noticias</span>
+        </button>
+        <button class="admin-nav-item" data-tab="telefonos">
+          <span class="nav-icon">📞</span>
+          <span>Teléfonos</span>
+        </button>
+        <button class="admin-nav-item" data-tab="promociones">
+          <span class="nav-icon">🎁</span>
+          <span>Promociones</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+
+      <!-- ===== TAB: USUARIOS ===== -->
+      <section class="admin-section active" id="admin-section-usuarios">
+        <div class="admin-section-header">
+          <h1 class="admin-section-title">Usuarios registrados</h1>
+          <div class="admin-section-actions">
+            <input type="text" id="filtro-usuarios" class="input-search" placeholder="Buscar por nombre, email o lote…" />
+          </div>
+        </div>
+        <div class="admin-stats" id="stats-usuarios">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-total-usuarios">—</span>
+            <span class="stat-label">Total usuarios</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-usuarios-hoy">—</span>
+            <span class="stat-label">Registrados hoy</span>
+          </div>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table" id="tabla-usuarios">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Lote</th>
+                <th>Rol</th>
+                <th>Registrado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-usuarios">
+              <tr><td colspan="6" class="table-loading">Cargando usuarios…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB: ANUNCIOS ===== -->
+      <section class="admin-section" id="admin-section-anuncios">
+        <div class="admin-section-header">
+          <h1 class="admin-section-title">Anuncios</h1>
+          <div class="admin-section-actions">
+            <select id="filtro-estado-anuncios" class="input-select">
+              <option value="">Todos los estados</option>
+              <option value="pendiente">Pendientes</option>
+              <option value="activo">Activos</option>
+              <option value="vencido">Vencidos</option>
+              <option value="pausado">Pausados</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-stats">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-anuncios-activos">—</span>
+            <span class="stat-label">Activos</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-anuncios-pendientes">—</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-anuncios-vencen-pronto">—</span>
+            <span class="stat-label">Vencen en 3 días</span>
+          </div>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table" id="tabla-anuncios">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Usuario</th>
+                <th>Categoría</th>
+                <th>Plan</th>
+                <th>Estado</th>
+                <th>Vencimiento</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-anuncios">
+              <tr><td colspan="7" class="table-loading">Cargando anuncios…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB: PAGOS ===== -->
+      <section class="admin-section" id="admin-section-pagos">
+        <div class="admin-section-header">
+          <h1 class="admin-section-title">Pagos</h1>
+          <div class="admin-section-actions">
+            <select id="filtro-estado-pagos" class="input-select">
+              <option value="">Todos los estados</option>
+              <option value="aprobado">Aprobados</option>
+              <option value="pendiente">Pendientes</option>
+              <option value="rechazado">Rechazados</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-stats">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-ingresos-totales">—</span>
+            <span class="stat-label">Ingresos totales</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-pagos-aprobados">—</span>
+            <span class="stat-label">Pagos aprobados</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-pagos-pendientes">—</span>
+            <span class="stat-label">Pagos pendientes</span>
+          </div>
+        </div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table" id="tabla-pagos">
+            <thead>
+              <tr>
+                <th>Ref. Externa</th>
+                <th>Usuario</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>MP ID</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-pagos">
+              <tr><td colspan="6" class="table-loading">Cargando pagos…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB: NOTICIAS ===== -->
+      <section class="admin-section" id="admin-section-noticias">
+        <div class="admin-section-header">
+          <h1 class="admin-section-title">Noticias del barrio</h1>
+          <div class="admin-section-actions">
+            <button class="btn btn-primary" id="btn-nueva-noticia">+ Nueva noticia</button>
+          </div>
+        </div>
+
+        <!-- Formulario nueva/editar noticia -->
+        <div class="admin-form-card" id="form-noticia-wrapper" style="display:none;">
+          <h2 class="form-card-title" id="form-noticia-titulo">Nueva noticia</h2>
+          <form id="form-noticia" novalidate>
+            <input type="hidden" id="noticia-id" />
+            <div class="form-group">
+              <label class="form-label" for="noticia-titulo-input">Título *</label>
+              <input type="text" id="noticia-titulo-input" class="form-input" maxlength="200" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="noticia-contenido">Contenido *</label>
+              <textarea id="noticia-contenido" class="form-input form-textarea" rows="6" maxlength="5000" required></textarea>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" id="noticia-publicada" class="form-checkbox" />
+              <label class="form-label" for="noticia-publicada">Publicar inmediatamente</label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-guardar-noticia">Guardar noticia</button>
+              <button type="button" class="btn btn-ghost" id="btn-cancelar-noticia">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table" id="tabla-noticias">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Creada</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-noticias">
+              <tr><td colspan="4" class="table-loading">Cargando noticias…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB: TELÉFONOS ===== -->
+      <section class="admin-section" id="admin-section-telefonos">
+        <div class="admin-section-header">
+          <h1 class="admin-section-title">Teléfonos útiles</h1>
+          <div class="admin-section-actions">
+            <button class="btn btn-primary" id="btn-nuevo-telefono">+ Agregar teléfono</button>
+          </div>
+        </div>
+
+        <!-- Formulario nuevo/editar teléfono -->
+        <div class="admin-form-card" id="form-telefono-wrapper" style="display:none;">
+          <h2 class="form-card-title" id="form-telefono-titulo">Nuevo teléfono</h2>
+          <form id="form-telefono" novalidate>
+            <input type="hidden" id="telefono-id" />
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="telefono-nombre">Nombre / Servicio *</label>
+                <input type="text" id="telefono-nombre" class="form-input" maxlength="100" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="telefono-numero">Número *</label>
+                <input type="text" id="telefono-numero" class="form-input" maxlength="30" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="telefono-categoria">Categoría</label>
+                <input type="text" id="telefono-categoria" class="form-input" maxlength="50" placeholder="Ej: Emergencias, Municipio…" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="telefono-icono">Emoji / Ícono</label>
+                <input type="text" id="telefono-icono" class="form-input" maxlength="10" placeholder="Ej: 🚒" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="telefono-descripcion">Descripción</label>
+              <input type="text" id="telefono-descripcion" class="form-input" maxlength="200" />
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-guardar-telefono">Guardar</button>
+              <button type="button" class="btn btn-ghost" id="btn-cancelar-telefono">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table" id="tabla-telefonos">
+            <thead>
+              <tr>
+                <th>Ícono</th>
+                <th>Nombre</th>
+                <th>Número</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-telefonos">
+              <tr><td colspan="5" class="table-loading">Cargando teléfonos…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB: PROMOCIONES ===== -->
+      <section class="admin-section" id="admin-section-promociones">
+        <div class="admin-section-header">
+          <h1 class="admin-section-title">Promociones</h1>
+          <div class="admin-section-actions">
+            <button class="btn btn-primary" id="btn-nueva-promocion">+ Nueva promoción</button>
+          </div>
+        </div>
+
+        <!-- Formulario nueva/editar promoción -->
+        <div class="admin-form-card" id="form-promocion-wrapper" style="display:none;">
+          <h2 class="form-card-title" id="form-promocion-titulo">Nueva promoción</h2>
+          <form id="form-promocion" novalidate>
+            <input type="hidden" id="promocion-id" />
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="promocion-nombre">Nombre de la promoción *</label>
+                <input type="text" id="promocion-nombre" class="form-input" maxlength="100" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="promocion-descuento">Descuento (%) *</label>
+                <input type="number" id="promocion-descuento" class="form-input" min="1" max="100" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="promocion-fecha-inicio">Fecha inicio *</label>
+                <input type="date" id="promocion-fecha-inicio" class="form-input" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="promocion-fecha-fin">Fecha fin *</label>
+                <input type="date" id="promocion-fecha-fin" class="form-input" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="promocion-descripcion">Descripción</label>
+              <textarea id="promocion-descripcion" class="form-input form-textarea" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" id="promocion-activa" class="form-checkbox" checked />
+              <label class="form-label" for="promocion-activa">Promoción activa</label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-guardar-promocion">Guardar</button>
+              <button type="button" class="btn btn-ghost" id="btn-cancelar-promocion">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table" id="tabla-promociones">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descuento</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-promociones">
+              <tr><td colspan="6" class="table-loading">Cargando promociones…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== MODAL: EDITAR LOTE ===== -->
+  <div class="modal-overlay" id="modal-editar-lote" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modal-lote-titulo">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-lote-titulo">Editar número de lote</h2>
+        <button class="modal-close" id="btn-cerrar-modal-lote" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Usuario: <strong id="modal-lote-usuario-nombre"></strong></p>
+        <input type="hidden" id="modal-lote-usuario-id" />
+        <div class="form-group">
+          <label class="form-label" for="modal-lote-nuevo">Nuevo número de lote *</label>
+          <input type="text" id="modal-lote-nuevo" class="form-input" maxlength="20" required
+                 placeholder="Ej: 42-B" />
+          <span class="form-hint">Solo el admin puede modificar este campo.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btn-confirmar-editar-lote">Guardar cambio</button>
+        <button class="btn btn-ghost" id="btn-cancelar-modal-lote">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: CONFIRMAR ELIMINACIÓN ===== -->
+  <div class="modal-overlay" id="modal-confirmar-eliminar" style="display:none;" role="dialog" aria-modal="true">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirmar eliminación</h2>
+        <button class="modal-close" id="btn-cerrar-modal-eliminar" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-eliminar-mensaje">¿Estás seguro de que querés eliminar este elemento? Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="btn-confirmar-eliminar">Eliminar</button>
+        <button class="btn btn-ghost" id="btn-cancelar-eliminar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initAdmin();
+    });
+  </script>
+
+</body>
+</html>

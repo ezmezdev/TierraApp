@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teléfonos útiles — BarrioConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    /* ── Teléfonos page styles ── */
+    .telefonos-hero {
+      background: linear-gradient(135deg, var(--verde) 0%, #1a5c38 100%);
+      padding: var(--space-16) var(--space-4) var(--space-12);
+      text-align: center;
+      color: #fff;
+    }
+    .telefonos-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: var(--space-2);
+    }
+    .telefonos-hero p {
+      opacity: .85;
+      font-size: 1.05rem;
+    }
+
+    .telefonos-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-4) var(--space-16);
+    }
+
+    /* Buscador */
+    .telefonos-search {
+      margin-bottom: var(--space-8);
+    }
+    .search-wrapper {
+      position: relative;
+      max-width: 480px;
+    }
+    .search-icon {
+      position: absolute;
+      left: var(--space-3);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-3) var(--space-3) var(--space-9);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      font-size: 1rem;
+      font-family: var(--font-body);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(45,122,79,.12);
+    }
+
+    /* Grupos por categoría */
+    .categoria-grupo {
+      margin-bottom: var(--space-8);
+    }
+    .categoria-titulo {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* Grid de tarjetas */
+    .telefonos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .telefono-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+    }
+    .telefono-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--verde);
+    }
+
+    .telefono-icono {
+      font-size: 2rem;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--verde-light);
+      border-radius: var(--radius-lg);
+    }
+
+    .telefono-info { flex: 1; min-width: 0; }
+
+    .telefono-nombre {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .telefono-descripcion {
+      color: var(--text-muted);
+      font-size: .83rem;
+      margin-bottom: var(--space-2);
+      line-height: 1.4;
+    }
+
+    .telefono-numero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      color: var(--verde);
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .telefono-numero-link:hover { color: var(--azul); text-decoration: underline; }
+
+    /* Copiar número */
+    .btn-copiar {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: .8rem;
+      color: var(--text-muted);
+      padding: 0 var(--space-1);
+      transition: color var(--transition);
+      vertical-align: middle;
+    }
+    .btn-copiar:hover { color: var(--verde); }
+
+    /* Estado vacío */
+    .telefonos-empty {
+      text-align: center;
+      padding: var(--space-20) var(--space-4);
+      color: var(--text-muted);
+    }
+    .telefonos-empty .empty-icon { font-size: 3rem; margin-bottom: var(--space-4); }
+
+    /* Sin resultados de búsqueda */
+    .no-resultados {
+      text-align: center;
+      padding: var(--space-12) var(--space-4);
+      color: var(--text-muted);
+    }
+
+    /* Skeleton */
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-4);
+    }
+    .skeleton-telefono {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      display: flex;
+      gap: var(--space-4);
+    }
+    .skeleton-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      background: var(--border);
+      flex-shrink: 0;
+      animation: shimmer 1.4s infinite ease-in-out;
+    }
+    .skeleton-lines { flex: 1; }
+    .skeleton-line {
+      background: var(--border);
+      border-radius: var(--radius-sm);
+      animation: shimmer 1.4s infinite ease-in-out;
+    }
+    @keyframes shimmer {
+      0%,100% { opacity: .6; }
+      50% { opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .telefonos-grid { grid-template-columns: 1fr; }
+      .skeleton-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <span class="brand-icon">🏘️</span>
+        <span class="brand-text">BarrioConnect</span>
+      </a>
+      <div class="navbar-links" id="navbar-links">
+        <a href="anuncios.html" class="nav-link">Servicios</a>
+        <a href="noticias.html" class="nav-link">Noticias</a>
+        <a href="telefonos.html" class="nav-link nav-link-active">Teléfonos</a>
+      </div>
+      <div class="navbar-auth" id="navbar-auth">
+        <!-- poblado por JS -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="telefonos-hero">
+    <h1>📞 Teléfonos útiles</h1>
+    <p>Contactos del municipio, emergencias y autoridades locales</p>
+  </section>
+
+  <!-- CONTENIDO -->
+  <div class="telefonos-container">
+
+    <!-- Buscador -->
+    <div class="telefonos-search">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input
+          type="search"
+          id="input-buscar-telefono"
+          class="search-input"
+          placeholder="Buscar por nombre o número…"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <!-- Lista / grupos -->
+    <div id="telefonos-contenido">
+      <!-- Skeletons mientras carga -->
+      <div class="skeleton-grid">
+        ${Array.from({length: 6}).map(() => `
+          <div class="skeleton-telefono">
+            <div class="skeleton-circle"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton-line" style="height:14px;width:60%;margin-bottom:8px;"></div>
+              <div class="skeleton-line" style="height:11px;width:80%;margin-bottom:8px;"></div>
+              <div class="skeleton-line" style="height:14px;width:40%;"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    /**
+     * Página de teléfonos útiles
+     * Pública: no requiere autenticación
+     */
+
+    let telefonosData = []; // cache local para filtrado
+
+    async function cargarTelefonos() {
+      const contenedor = document.getElementById('telefonos-contenido');
+
+      try {
+        const { data: telefonos, error } = await supabase
+          .from('telefonos_utiles')
+          .select('id, nombre, numero, categoria, descripcion, icono')
+          .order('categoria', { ascending: true })
+          .order('nombre', { ascending: true });
+
+        if (error) throw error;
+
+        telefonosData = telefonos || [];
+
+        if (telefonosData.length === 0) {
+          contenedor.innerHTML = `
+            <div class="telefonos-empty">
+              <div class="empty-icon">📭</div>
+              <p>No hay teléfonos cargados aún.</p>
+            </div>`;
+          return;
+        }
+
+        renderTelefonos(telefonosData);
+
+      } catch (err) {
+        console.error('Error cargando teléfonos:', err);
+        contenedor.innerHTML = `
+          <div class="telefonos-empty">
+            <div class="empty-icon">⚠️</div>
+            <p>No se pudo cargar el directorio.</p>
+            <p>Por favor, intentá de nuevo más tarde.</p>
+          </div>`;
+      }
+    }
+
+    /**
+     * Renderiza los teléfonos agrupados por categoría
+     * @param {Array} lista - Array de teléfonos filtrado
+     */
+    function renderTelefonos(lista) {
+      const contenedor = document.getElementById('telefonos-contenido');
+
+      if (lista.length === 0) {
+        contenedor.innerHTML = `
+          <div class="no-resultados">
+            <p>😕 No se encontraron resultados para tu búsqueda.</p>
+          </div>`;
+        return;
+      }
+
+      // Agrupar por categoría
+      const grupos = {};
+      lista.forEach(t => {
+        const cat = t.categoria || 'General';
+        if (!grupos[cat]) grupos[cat] = [];
+        grupos[cat].push(t);
+      });
+
+      const html = Object.entries(grupos).map(([cat, items]) => `
+        <div class="categoria-grupo">
+          <h2 class="categoria-titulo">${escaparHTML(cat)}</h2>
+          <div class="telefonos-grid">
+            ${items.map(t => renderTelefonoCard(t)).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      contenedor.innerHTML = html;
+    }
+
+    /**
+     * Genera el HTML de una tarjeta de teléfono
+     */
+    function renderTelefonoCard(t) {
+      const icono = t.icono || '📞';
+      const nombre = escaparHTML(t.nombre);
+      const numero = escaparHTML(t.numero);
+      const descripcion = t.descripcion ? `<p class="telefono-descripcion">${escaparHTML(t.descripcion)}</p>` : '';
+
+      // Detectar si es número de teléfono o WhatsApp (solo dígitos y +)
+      const soloDigitos = t.numero.replace(/[\s\-()]/g, '');
+      const esNumero = /^\+?[\d]+$/.test(soloDigitos);
+      const telHref = esNumero ? `tel:${soloDigitos}` : '#';
+
+      return `
+        <div class="telefono-card">
+          <div class="telefono-icono">${icono}</div>
+          <div class="telefono-info">
+            <div class="telefono-nombre" title="${nombre}">${nombre}</div>
+            ${descripcion}
+            <div>
+              <a href="${telHref}" class="telefono-numero-link" aria-label="Llamar a ${nombre}">
+                📱 ${numero}
+              </a>
+              <button
+                class="btn-copiar"
+                onclick="copiarNumero('${soloDigitos}', this)"
+                title="Copiar número"
+                aria-label="Copiar número de ${nombre}"
+              >📋</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Copia el número al portapapeles
+     */
+    async function copiarNumero(numero, btn) {
+      try {
+        await navigator.clipboard.writeText(numero);
+        const original = btn.textContent;
+        btn.textContent = '✅';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch {
+        mostrarToast('No se pudo copiar el número', 'error');
+      }
+    }
+
+    /**
+     * Filtrar teléfonos por texto
+     */
+    function filtrarTelefonos(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) {
+        renderTelefonos(telefonosData);
+        return;
+      }
+      const filtrados = telefonosData.filter(t =>
+        t.nombre.toLowerCase().includes(q) ||
+        t.numero.toLowerCase().includes(q) ||
+        (t.categoria && t.categoria.toLowerCase().includes(q)) ||
+        (t.descripcion && t.descripcion.toLowerCase().includes(q))
+      );
+      renderTelefonos(filtrados);
+    }
+
+    /**
+     * Escapar HTML para prevenir XSS
+     */
+    function escaparHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Debounce para el buscador
+    let debounceTimer;
+    document.addEventListener('DOMContentLoaded', () => {
+      initNavbar();
+      cargarTelefonos();
+
+      const inputBuscar = document.getElementById('input-buscar-telefono');
+      inputBuscar.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => filtrarTelefonos(e.target.value), 250);
+      });
+    });
+  </script>
+
+</body>
+</html>

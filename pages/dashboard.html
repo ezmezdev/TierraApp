@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Panel — BarrioConnect</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- MercadoPago SDK -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/anuncios.js"></script>
+  <script src="/js/pagos.js"></script>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="/index.html" class="navbar__brand">
+        <div class="navbar__brand-icon">🏘</div>
+        BarrioConnect
+      </a>
+      <div class="navbar__menu" id="navbar-menu">
+        <a href="/pages/anuncios.html">Servicios</a>
+        <a href="/pages/noticias.html">Noticias</a>
+        <a href="/pages/telefonos.html">Teléfonos</a>
+        <a href="/pages/admin.html" class="navbar__admin-link" style="display:none;">⚙️ Admin</a>
+      </div>
+      <div class="navbar__user">
+        <span class="navbar__user-name"></span>
+        <button id="btn-logout" class="btn btn--ghost btn--sm">Salir</button>
+        <button class="navbar__hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== LAYOUT ===== -->
+  <div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar__user">
+        <div class="sidebar__avatar" id="sidebar-avatar">?</div>
+        <div class="sidebar__name" id="sidebar-nombre">Cargando...</div>
+        <div class="sidebar__lote" id="sidebar-lote">Lote —</div>
+      </div>
+
+      <nav class="sidebar__nav">
+        <div class="sidebar__section-label">Principal</div>
+        <a href="#" class="sidebar__link active" onclick="mostrarSeccion('inicio', event)">
+          <span class="icon">🏠</span> Inicio
+        </a>
+        <a href="#" class="sidebar__link" onclick="mostrarSeccion('mis-anuncios', event)">
+          <span class="icon">📋</span> Mis anuncios
+        </a>
+        <a href="#" class="sidebar__link" onclick="mostrarSeccion('publicar', event)">
+          <span class="icon">➕</span> Publicar anuncio
+        </a>
+        <a href="#" class="sidebar__link" onclick="mostrarSeccion('pagos', event)">
+          <span class="icon">💳</span> Mis pagos
+        </a>
+
+        <div class="sidebar__section-label">Cuenta</div>
+        <a href="#" class="sidebar__link" onclick="mostrarSeccion('perfil', event)">
+          <span class="icon">👤</span> Mi perfil
+        </a>
+        <a href="#" class="sidebar__link" onclick="mostrarSeccion('seguridad', event)">
+          <span class="icon">🔒</span> Contraseña
+        </a>
+        <a href="#" class="sidebar__link" onclick="cerrarSesion()">
+          <span class="icon">🚪</span> Cerrar sesión
+        </a>
+      </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="dashboard-content">
+
+      <!-- Alertas de vencimiento (se llena dinámicamente) -->
+      <div id="alerta-vencimiento" style="display:none;margin-bottom:1rem;"></div>
+
+      <!-- ===== SECCIÓN: INICIO ===== -->
+      <section class="dash-section active" id="sec-inicio">
+        <div class="dashboard-header">
+          <h2 id="welcome-nombre">¡Bienvenido!</h2>
+          <p>Resumen de tu actividad en el barrio.</p>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom:2rem;">
+          <div class="stat-card">
+            <div class="stat-card__label">Anuncios activos</div>
+            <div class="stat-card__valor" id="stat-activos">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Total publicados</div>
+            <div class="stat-card__valor" id="stat-total">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Pagos realizados</div>
+            <div class="stat-card__valor" id="stat-pagos">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__header">
+            <h3>Accesos rápidos</h3>
+          </div>
+          <div class="card__body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;">
+            <button class="btn btn--primario" onclick="mostrarSeccion('publicar')">➕ Publicar anuncio</button>
+            <a href="/pages/anuncios.html" class="btn btn--secundario">🔍 Ver servicios</a>
+            <a href="/pages/noticias.html" class="btn btn--ghost">📰 Ver noticias</a>
+            <a href="/pages/telefonos.html" class="btn btn--ghost">📞 Teléfonos</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECCIÓN: MIS ANUNCIOS ===== -->
+      <section class="dash-section" id="sec-mis-anuncios">
+        <div class="dashboard-header">
+          <h2>Mis anuncios</h2>
+          <p>Gestioná tus publicaciones activas y anteriores.</p>
+        </div>
+        <div id="mis-anuncios-grid" class="mis-anuncios-grid"></div>
+      </section>
+
+      <!-- ===== SECCIÓN: PUBLICAR ===== -->
+      <section class="dash-section" id="sec-publicar">
+        <div class="dashboard-header">
+          <h2>Publicar anuncio</h2>
+          <p>Llegá a todos los vecinos del barrio con tu servicio.</p>
+        </div>
+
+        <!-- Promo activa -->
+        <div id="promo-container" style="display:none;"></div>
+
+        <div class="card">
+          <div class="card__body">
+            <form id="form-anuncio" novalidate>
+
+              <div class="form-group">
+                <label for="anuncio-titulo">Título del anuncio *</label>
+                <input type="text" id="anuncio-titulo" placeholder="Ej: Electricista matriculado - urgencias" maxlength="100" required>
+              </div>
+
+              <div class="form-group">
+                <label for="anuncio-categoria">Categoría *</label>
+                <select id="anuncio-categoria" required>
+                  <option value="">Cargando categorías...</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="anuncio-desc">Descripción *</label>
+                <textarea id="anuncio-desc" placeholder="Describí tu servicio, experiencia, disponibilidad..." maxlength="1000" rows="5" required></textarea>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div class="form-group">
+                  <label for="anuncio-telefono">Teléfono</label>
+                  <input type="tel" id="anuncio-telefono" placeholder="011-XXXX-XXXX">
+                </div>
+                <div class="form-group">
+                  <label for="anuncio-whatsapp">WhatsApp</label>
+                  <input type="tel" id="anuncio-whatsapp" placeholder="549XXXXXXXXXX">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="anuncio-email">Email de contacto</label>
+                <input type="email" id="anuncio-email" placeholder="contacto@email.com">
+              </div>
+
+              <div class="form-group" style="margin-top:1.5rem;">
+                <label style="font-size:1rem;font-weight:700;color:var(--azul);">Seleccioná tu plan *</label>
+                <div id="planes-container" class="planes-grid" style="margin-top:0.75rem;">
+                  <div style="text-align:center;padding:1rem;color:var(--gris-400);">
+                    <div class="loading-spinner" style="margin:0 auto;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn--primario btn--lg" style="width:100%;margin-top:1rem;">
+                💳 Continuar al pago
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECCIÓN: PAGOS ===== -->
+      <section class="dash-section" id="sec-pagos">
+        <div class="dashboard-header">
+          <h2>Mis pagos</h2>
+          <p>Historial de pagos y publicaciones.</p>
+        </div>
+        <div id="mis-pagos-lista"></div>
+      </section>
+
+      <!-- ===== SECCIÓN: PERFIL ===== -->
+      <section class="dash-section" id="sec-perfil">
+        <div class="dashboard-header">
+          <h2>Mi perfil</h2>
+          <p>Actualizá tus datos personales.</p>
+        </div>
+
+        <div class="card">
+          <div class="card__body">
+            <form id="form-perfil" class="perfil-form" novalidate>
+              <div id="alerta-perfil" class="alerta" style="display:none;margin-bottom:1rem;"></div>
+
+              <div class="form-group">
+                <label for="perfil-nombre">Nombre completo</label>
+                <input type="text" id="perfil-nombre" placeholder="Tu nombre" required>
+              </div>
+
+              <div class="form-group">
+                <label for="perfil-email">Email</label>
+                <input type="email" id="perfil-email" disabled style="opacity:0.6;cursor:not-allowed;">
+                <small style="font-size:0.78rem;color:var(--gris-400);">El email no se puede modificar.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="perfil-lote">Número de lote</label>
+                <input type="text" id="perfil-lote" disabled style="opacity:0.6;cursor:not-allowed;">
+                <small style="font-size:0.78rem;color:var(--gris-400);">Para modificar el lote, contactá al administrador.</small>
+              </div>
+
+              <button type="submit" class="btn btn--primario">Guardar cambios</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECCIÓN: SEGURIDAD ===== -->
+      <section class="dash-section" id="sec-seguridad">
+        <div class="dashboard-header">
+          <h2>Cambiar contraseña</h2>
+        </div>
+
+        <div class="card" style="max-width:460px;">
+          <div class="card__body">
+            <form id="form-password" novalidate>
+              <div id="alerta-password" class="alerta" style="display:none;margin-bottom:1rem;"></div>
+
+              <div class="form-group">
+                <label for="pwd-nueva">Nueva contraseña</label>
+                <div class="input-with-icon">
+                  <input type="password" id="pwd-nueva" placeholder="Mínimo 8 caracteres" required>
+                  <button type="button" class="toggle-password" data-target="pwd-nueva">👁</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pwd-confirmar">Confirmar nueva contraseña</label>
+                <div class="input-with-icon">
+                  <input type="password" id="pwd-confirmar" placeholder="Repetí la contraseña" required>
+                  <button type="button" class="toggle-password" data-target="pwd-confirmar">👁</button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn--primario">Actualizar contraseña</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: PAGO -->
+  <div class="modal-overlay" id="modal-pago">
+    <div class="modal">
+      <div class="modal__header">
+        <h3>Confirmar pago</h3>
+        <button class="modal__close" onclick="cerrarModalPago()">×</button>
+      </div>
+      <div class="modal__body" id="modal-pago-contenido">
+        <!-- Se llena dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RENOVAR -->
+  <div class="modal-overlay" id="modal-renovar">
+    <div class="modal">
+      <div class="modal__header">
+        <h3>Renovar anuncio</h3>
+        <button class="modal__close" onclick="document.getElementById('modal-renovar').classList.remove('visible')">×</button>
+      </div>
+      <div class="modal__body">
+        <p style="margin-bottom:1rem;color:var(--gris-600);">Seleccioná el plan para renovar tu anuncio:</p>
+        <div id="planes-container-renovar" class="planes-grid"></div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="document.getElementById('modal-renovar').classList.remove('visible')">Cancelar</button>
+        <button class="btn btn--primario" onclick="confirmarRenovacion()">Continuar al pago</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    // ===== INICIALIZACIÓN =====
+    async function initDashboard() {
+      await inicializarSupabase();
+      const session = await requireAuth();
+      if (!session) return;
+
+      await initNavbarConUsuario();
+      await manejarRetornoMP();
+
+      // Cargar perfil en sidebar
+      const perfil = await obtenerPerfilActual();
+      if (perfil) {
+        document.getElementById('sidebar-avatar').textContent = perfil.nombre.charAt(0).toUpperCase();
+        document.getElementById('sidebar-nombre').textContent = perfil.nombre;
+        document.getElementById('sidebar-lote').textContent = `Lote ${perfil.numero_lote}`;
+        document.getElementById('welcome-nombre').textContent = `¡Hola, ${perfil.nombre.split(' ')[0]}!`;
+
+        // Llenar form de perfil
+        document.getElementById('perfil-nombre').value = perfil.nombre;
+        document.getElementById('perfil-email').value = perfil.email;
+        document.getElementById('perfil-lote').value = perfil.numero_lote;
+
+        // Mostrar link admin si corresponde
+        if (perfil.rol === 'admin') {
+          document.querySelector('.navbar__admin-link').style.display = 'flex';
+        }
+      }
+
+      // Cargar estadísticas
+      const sb = getSupabase();
+      const { data: anuncios } = await sb.from('anuncios').select('id, estado').eq('usuario_id', session.user.id);
+      const { data: pagos } = await sb.from('pagos').select('id').eq('usuario_id', session.user.id).eq('estado', 'aprobado');
+
+      if (anuncios) {
+        document.getElementById('stat-activos').textContent = anuncios.filter(a => a.estado === 'activo').length;
+        document.getElementById('stat-total').textContent = anuncios.length;
+      }
+      if (pagos) document.getElementById('stat-pagos').textContent = pagos.length;
+
+      // Inicializar toggles de contraseña
+      initTogglePassword();
+
+      // Verificar retorno de MP y cargar alertas
+      if (anuncios && anuncios.length > 0) {
+        await cargarMisAnuncios();
+      }
+    }
+
+    // ===== NAVEGACIÓN =====
+    function mostrarSeccion(seccion, event) {
+      if (event) event.preventDefault();
+
+      // Actualizar sidebar
+      document.querySelectorAll('.sidebar__link').forEach(l => l.classList.remove('active'));
+      if (event?.currentTarget) event.currentTarget.classList.add('active');
+
+      // Mostrar sección
+      document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+      const secEl = document.getElementById(`sec-${seccion}`);
+      if (secEl) secEl.classList.add('active');
+
+      // Cargar datos según sección
+      switch (seccion) {
+        case 'mis-anuncios': cargarMisAnuncios(); break;
+        case 'publicar': initFormPublicarAnuncio(); break;
+        case 'pagos': cargarMisPagos(); break;
+      }
+    }
+
+    // ===== FORMULARIO DE PERFIL =====
+    document.getElementById('form-perfil').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sb = getSupabase();
+      const session = await sb.auth.getSession();
+      const userId = session.data.session?.user.id;
+
+      const nombre = sanitizar(document.getElementById('perfil-nombre').value);
+      if (!nombre || nombre.length < 2) {
+        mostrarAlerta('alerta-perfil', 'El nombre debe tener al menos 2 caracteres', 'error');
+        return;
+      }
+
+      const { error } = await sb.from('perfiles').update({ nombre }).eq('id', userId);
+      if (error) {
+        mostrarAlerta('alerta-perfil', 'Error al actualizar el perfil', 'error');
+        return;
+      }
+      mostrarAlerta('alerta-perfil', 'Perfil actualizado correctamente', 'exito');
+    });
+
+    // ===== FORMULARIO CONTRASEÑA =====
+    document.getElementById('form-password').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sb = getSupabase();
+
+      const nueva = document.getElementById('pwd-nueva').value;
+      const confirmar = document.getElementById('pwd-confirmar').value;
+
+      if (!nueva || nueva.length < 8) {
+        mostrarAlerta('alerta-password', 'La contraseña debe tener al menos 8 caracteres', 'error');
+        return;
+      }
+      if (nueva !== confirmar) {
+        mostrarAlerta('alerta-password', 'Las contraseñas no coinciden', 'error');
+        return;
+      }
+
+      const btn = e.target.querySelector('[type="submit"]');
+      setBtnLoading(btn, true);
+
+      const { error } = await sb.auth.updateUser({ password: nueva });
+      setBtnLoading(btn, false);
+
+      if (error) {
+        mostrarAlerta('alerta-password', 'Error al cambiar la contraseña. Intentá nuevamente.', 'error');
+        return;
+      }
+      mostrarAlerta('alerta-password', '¡Contraseña actualizada correctamente!', 'exito');
+      document.getElementById('form-password').reset();
+    });
+
+    // Cerrar modales al hacer click fuera
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('visible');
+      });
+    });
+
+    // Iniciar
+    initDashboard();
+  </script>
+</body>
+</html>
