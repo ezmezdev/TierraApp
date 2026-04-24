@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BarrioConnect — Tu comunidad en línea</title>
   <meta name="description" content="Plataforma digital para barrios semi cerrados. Anuncios de servicios, noticias y más.">
-  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="./css/main.css">
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <!-- Config (el usuario debe crear este archivo) -->
-  <script src="/js/config.js"></script>
-  <script src="/js/supabase.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/supabase.js"></script>
 </head>
 <body>
 
@@ -23,15 +23,15 @@
       </a>
 
       <div class="navbar__menu" id="navbar-menu">
-        <a href="/pages/anuncios.html">Servicios</a>
-        <a href="/pages/noticias.html">Noticias</a>
-        <a href="/pages/telefonos.html">Teléfonos útiles</a>
+        <a href="./pages/anuncios.html">Servicios</a>
+        <a href="./pages/noticias.html">Noticias</a>
+        <a href="./pages/telefonos.html">Teléfonos útiles</a>
       </div>
 
       <div class="navbar__user">
         <span class="navbar__user-name" id="navbar-nombre" style="display:none;"></span>
-        <a href="/pages/dashboard.html" class="btn btn--secundario btn--sm" id="btn-dashboard" style="display:none;">Mi panel</a>
-        <a href="/pages/login.html" class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
+        <a href="./pages/dashboard.html" class="btn btn--secundario btn--sm" id="btn-dashboard" style="display:none;">Mi panel</a>
+        <a href="./pages/login.html" class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
         <button class="navbar__hamburger" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -46,8 +46,8 @@
       <h1>La plataforma digital de tu barrio</h1>
       <p>Encontrá servicios de confianza, leé noticias del barrio y conectate con tu comunidad.</p>
       <div class="hero__actions">
-        <a href="/pages/anuncios.html" class="btn btn--primario btn--lg">Ver servicios</a>
-        <a href="/pages/registro.html" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.4);">
+        <a href="./pages/anuncios.html" class="btn btn--primario btn--lg">Ver servicios</a>
+        <a href="./pages/registro.html" class="btn btn--lg" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.4);">
           Registrarse gratis
         </a>
       </div>
@@ -91,7 +91,7 @@
     <div class="wrapper">
       <div class="section-header">
         <h2>Últimas noticias</h2>
-        <a href="/pages/noticias.html" class="btn btn--ghost btn--sm">Ver todas →</a>
+        <a href="./pages/noticias.html" class="btn btn--ghost btn--sm">Ver todas →</a>
       </div>
       <div class="noticias-grid" id="noticias-preview-grid">
         <!-- Se carga dinámicamente -->
@@ -109,7 +109,7 @@
       <p style="color:rgba(255,255,255,0.85);font-size:1.05rem;margin-bottom:2rem;">
         Publicá tu anuncio y llegá a todos los vecinos del barrio. Planes desde $500.
       </p>
-      <a href="/pages/registro.html" class="btn btn--lg" style="background:white;color:var(--verde);">
+      <a href="./pages/registro.html" class="btn btn--lg" style="background:white;color:var(--verde);">
         Publicar mi servicio
       </a>
     </div>
@@ -121,9 +121,9 @@
       <div style="margin-bottom:1rem;font-size:1.5rem;">🏘</div>
       <p style="margin:0;font-size:0.875rem;">
         BarrioConnect — La plataforma de tu comunidad.
-        <a href="/pages/noticias.html">Noticias</a> ·
-        <a href="/pages/telefonos.html">Teléfonos</a> ·
-        <a href="/pages/anuncios.html">Servicios</a>
+        <a href="./pages/noticias.html">Noticias</a> ·
+        <a href="./pages/telefonos.html">Teléfonos</a> ·
+        <a href="./pages/anuncios.html">Servicios</a>
       </p>
     </div>
   </footer>
